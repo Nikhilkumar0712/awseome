@@ -1,4 +1,5 @@
 import React from "react";
+import { Feather } from "@expo/vector-icons";
 import {
   SafeAreaView,
   View,
@@ -10,71 +11,36 @@ import {
   ImageBackground,
 } from "react-native";
 
-const data = [
-  {
-    dt_txt: "2022-08-30 16:00:00",
-    main: {
-      temp_min: 296.34,
-      temp_max: 298.24,
-    },
-    weather: [
-      {
-        id: 500,
-        main: "Rain",
-        description: "light rain",
-        icon: "10d",
-      },
-    ],
-  },
-  {
-    dt_txt: "2022-08-30 16:00:00",
-    main: {
-      temp_min: 296.34,
-      temp_max: 298.24,
-    },
-    weather: [
-      {
-        id: 500,
-        main: "Rain",
-        description: "light rain",
-        icon: "10d",
-      },
-    ],
-  },
-  {
-    dt_txt: "2022-08-30 16:00:00",
-    main: {
-      temp_min: 296.34,
-      temp_max: 298.24,
-    },
-    weather: [
-      {
-        id: 500,
-        main: "Rain",
-        description: "light rain",
-        icon: "10d",
-      },
-    ],
-  },
-];
+import moment from "moment";
+
+import { weatherType } from "../../utilities/Weather-Type";
 
 const Item = (props) => {
-  const { dt_txt, temp_max, temp_min, description } = props;
-
+  const { dt_txt, temp_min, temp_max, condition } = props;
+  const { item, date, temp, dateTextWrapper } = style;
   return (
     <>
-      <View style={style.item}>
-        <Text style={style.dt_txt}>{dt_txt}</Text>
-        <Text style={style.max}>{temp_max}</Text>
-        <Text style={style.max}>{temp_min}</Text>
+      <View style={item}>
+        <Feather
+          name={weatherType[condition]?.icon}
+          size={50}
+          color={"white"}
+        />
+        <View style={dateTextWrapper}>
+          <Text style={date}>{moment(dt_txt).format("dddd")}</Text>
+          <Text style={date}>{moment(dt_txt).format("h:mm:ss a")}</Text>
+        </View>
+        <Text style={temp}>{`${Math.round(temp_min)}° / ${Math.round(
+          temp_max
+        )}°`}</Text>
       </View>
     </>
   );
 };
-const UpcomingWeather = () => {
+const UpcomingWeather = ({ weatherData }) => {
   const renderItem = ({ item }) => (
     <Item
-      // condition={item.condition.weather[0].main}
+      condition={item.weather[0]?.main}
       dt_txt={item.dt_txt}
       temp_min={item.main.temp_min}
       temp_max={item.main.temp_max}></Item>
@@ -87,7 +53,7 @@ const UpcomingWeather = () => {
           source={require("../../../assets/authbg.png")}
           style={style.image}>
           <Text style={style.heading}>Up Coming Weather</Text>
-          <FlatList data={data} renderItem={renderItem} />
+          <FlatList data={weatherData} renderItem={renderItem} />
         </ImageBackground>
       </SafeAreaView>
     </>
@@ -102,7 +68,6 @@ const style = StyleSheet.create({
   container: {
     backgroundColor: "red",
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
   },
   dt_txt: {
     fontSize: 20,
@@ -116,7 +81,7 @@ const style = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     borderWidth: 5,
-    backgroundColor: "pink",
+    backgroundColor: "indianred",
   },
   dt_txt: {
     color: "white",
@@ -128,6 +93,17 @@ const style = StyleSheet.create({
   },
   image: {
     flex: 1,
+  },
+  temp: {
+    color: "white",
+    fontSize: 20,
+  },
+  date: {
+    color: "white",
+    fontSize: 15,
+  },
+  dateTextWrapper: {
+    flexDirection: "column",
   },
 });
 
